@@ -1,0 +1,9 @@
+[package]
+name = "os"
+version = "0.1.0"
+authors = ["apogeeoak <59737221+apogeeoak@users.noreply.github.com>"]
+edition = "2018"
+
+[dependencies]
+bootloader = "0.9.16"
+spin = "0.7.1"
