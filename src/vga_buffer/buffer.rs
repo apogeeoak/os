@@ -6,7 +6,7 @@ const BUFFER_HEIGHT: usize = 25;
 const BUFFER_WIDTH: usize = 80;
 
 #[repr(transparent)]
-struct Buffer {
+pub(super) struct Buffer {
     characters: [[ScreenChar; BUFFER_WIDTH]; BUFFER_HEIGHT],
 }
 
