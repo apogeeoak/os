@@ -1,0 +1,7 @@
+# Git ignore file.
+
+# Target directory.
+/target
+
+# Visual Studio Code settings.
+/.vscode
