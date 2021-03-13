@@ -20,7 +20,7 @@ fn panic(info: &PanicInfo) -> ! {
 #[cfg(test)]
 mod tests {
     pub fn basic() {
-        let actual = 0;
+        let actual = 1;
         assert_eq!(0, actual);
     }
 }

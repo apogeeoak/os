@@ -4,6 +4,8 @@ use crate::serial_print;
 use crate::serial_println;
 use core::panic::PanicInfo;
 
+pub mod should_panic;
+
 pub trait Testable {
     fn run(&self);
     fn run_should_panic(&self);
