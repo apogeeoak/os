@@ -1,11 +1,12 @@
-use super::qemu;
-use crate::serial_print;
-use crate::serial_println;
 use core::panic::PanicInfo;
 use core::slice::Iter;
+
 use spin::Mutex;
 use spin::Once;
 
+use super::qemu;
+use crate::serial_print;
+use crate::serial_println;
 /// Implementation Incomplete: Stack is not properly aligned after
 /// running tests.
 
@@ -37,7 +38,7 @@ pub fn runner(tests: &'static [&dyn Testable]) {
 }
 
 // Test mode panic handler.
-pub fn panic(_: &PanicInfo) -> ! {
+pub fn panic(_: &PanicInfo) {
     serial_println!("ok");
 
     // Reset stack pointer.
@@ -47,7 +48,6 @@ pub fn panic(_: &PanicInfo) -> ! {
     }
 
     run_next();
-    loop {}
 }
 
 fn run_next() {
@@ -68,7 +68,10 @@ struct TestsIter {
 impl TestsIter {
     fn new(items: &'static [&dyn Testable], stack_pointer: u64) -> TestsIter {
         let iter = items.iter();
-        TestsIter { iter, stack_pointer }
+        TestsIter {
+            iter,
+            stack_pointer,
+        }
     }
 }
 
@@ -79,7 +82,9 @@ struct Tests {
 impl Iterator for Tests {
     type Item = &'static &'static dyn Testable;
 
-    fn next(&mut self) -> Option<Self::Item> { self.inner.lock().iter.next() }
+    fn next(&mut self) -> Option<Self::Item> {
+        self.inner.lock().iter.next()
+    }
 }
 
 impl Tests {
@@ -94,7 +99,11 @@ impl Tests {
         Tests { inner }
     }
 
-    pub fn get() -> Option<Tests> { Tests::instance().get().map(|inner| Tests { inner }) }
+    pub fn get() -> Option<Tests> {
+        Tests::instance().get().map(|inner| Tests { inner })
+    }
 
-    pub fn stack_pointer(&self) -> u64 { self.inner.lock().stack_pointer }
+    pub fn stack_pointer(&self) -> u64 {
+        self.inner.lock().stack_pointer
+    }
 }

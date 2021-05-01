@@ -49,9 +49,9 @@ pub enum ColorCode {
 }
 
 impl ColorCode {
-    pub fn to_str(&self) -> &'static str {
+    pub fn to_str(self) -> &'static str {
         use ColorCode::*;
-        match *self {
+        match self {
             Black => "30",
             Red => "31",
             Green => "32",

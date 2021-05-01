@@ -1,8 +1,11 @@
+use core::panic::PanicInfo;
+use core::str;
+
+use super::byte_writer::ByteWriter;
 use super::pretty::Color;
 use super::qemu;
 use crate::serial_print;
 use crate::serial_println;
-use core::panic::PanicInfo;
 
 pub mod should_panic;
 
@@ -35,6 +38,13 @@ pub fn runner(tests: &[&dyn Testable]) {
     qemu::exit(qemu::ExitCode::Success)
 }
 
+// Run single test.
+pub fn run(test: &dyn Testable) {
+    serial_println!("Running single test.");
+    test.run();
+    qemu::exit(qemu::ExitCode::Success)
+}
+
 // Run single should panic test.
 pub fn run_should_panic(test: &dyn Testable) {
     serial_println!("Running should panic test.");
@@ -46,6 +56,7 @@ pub fn panic(info: &PanicInfo) -> ! {
     println_failed();
     serial_println!("\nError: {}", info);
     qemu::exit(qemu::ExitCode::Failure);
+    #[allow(clippy::empty_loop)]
     loop {}
 }
 
@@ -53,6 +64,31 @@ pub fn panic(info: &PanicInfo) -> ! {
 pub fn panic_should_panic(_: &PanicInfo) -> ! {
     println_ok();
     qemu::exit(qemu::ExitCode::Success);
+    #[allow(clippy::empty_loop)]
+    loop {}
+}
+
+// Test mode should panic with message handler.
+pub fn panic_should_panic_with<const LENGTH: usize>(info: &PanicInfo, message: &[u8; LENGTH]) -> ! {
+    let mut buffer = ByteWriter::<LENGTH>::new();
+    use core::fmt::Write;
+    write!(&mut buffer, "{}", info).unwrap();
+
+    if buffer.starts_with(message) {
+        println_ok();
+        qemu::exit(qemu::ExitCode::Success);
+    } else {
+        println_failed();
+        serial_println!(
+            "\nPanic did not contain the expected message.\n{:>10}: {}\n{:>10}: {}",
+            "Expected",
+            str::from_utf8(message).unwrap(),
+            "Info",
+            info
+        );
+        qemu::exit(qemu::ExitCode::Failure);
+    }
+    #[allow(clippy::empty_loop)]
     loop {}
 }
 

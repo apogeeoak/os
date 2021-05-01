@@ -2,26 +2,25 @@
 #![no_main]
 #![feature(custom_test_frameworks)]
 #![test_runner(os::test::runner)]
-#![reexport_test_harness_main = "test_main"]
+#![reexport_test_harness_main = "test_harness"]
 
-use core::panic::PanicInfo;
 use os::println;
 
 // Entry point.
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
-    test_main();
+bootloader::entry_point!(main);
+fn main(_: &'static bootloader::BootInfo) -> ! {
+    os::init();
+    test_harness();
     loop {}
 }
 
 // Panic handler.
 #[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
+fn panic(info: &core::panic::PanicInfo) -> ! {
     os::test::panic(info)
 }
 
 // Tests.
-#[cfg(test)]
 mod tests {
     use super::*;
 

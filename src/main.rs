@@ -2,44 +2,39 @@
 #![no_main]
 #![feature(custom_test_frameworks)]
 #![test_runner(os::test::runner)]
-#![reexport_test_harness_main = "test_main"]
-
-use core::panic::PanicInfo;
+#![reexport_test_harness_main = "test_harness"]
 
 #[cfg(not(test))]
-use os::println;
-
-///// Run /////
-
-// Entry point.
+bootloader::entry_point!(kernel::main);
 #[cfg(not(test))]
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
-    println!("Hello World!");
-    loop {}
+mod kernel {
+    use os::println;
+
+    pub fn main(_: &'static bootloader::BootInfo) -> ! {
+        os::init();
+        println!("Hello World!");
+        loop {}
+    }
+
+    #[panic_handler]
+    fn panic(info: &core::panic::PanicInfo) -> ! {
+        println!("{}", info);
+        loop {}
+    }
 }
 
-// Panic handler.
-#[cfg(not(test))]
-#[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
-    println!("{}", info);
-    loop {}
-}
-
-///// Test /////
-
-// Entry point.
 #[cfg(test)]
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
-    test_main();
-    loop {}
-}
-
-// Panic handler.
+bootloader::entry_point!(tests::main);
 #[cfg(test)]
-#[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
-    os::test::panic(info)
+mod tests {
+    pub fn main(_: &'static bootloader::BootInfo) -> ! {
+        os::init();
+        super::test_harness();
+        loop {}
+    }
+
+    #[panic_handler]
+    fn panic(info: &core::panic::PanicInfo) -> ! {
+        os::test::panic(info)
+    }
 }
