@@ -1,4 +1,4 @@
-pub mod byte_writer;
+pub mod byte_compare;
 pub mod pretty;
 pub mod qemu;
 pub mod serial;

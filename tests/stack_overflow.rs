@@ -12,7 +12,7 @@ fn main(_: &'static bootloader::BootInfo) -> ! {
 // Panic handler.
 #[panic_handler]
 fn panic(info: &core::panic::PanicInfo) -> ! {
-    let message = b"panicked at 'EXCEPTION: Double Fault";
+    let message = "panicked at 'EXCEPTION: Double Fault";
     os::test::panic_should_panic_with(info, message)
 }
 

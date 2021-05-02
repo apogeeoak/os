@@ -1,7 +1,7 @@
 use core::panic::PanicInfo;
 use core::str;
 
-use super::byte_writer::ByteWriter;
+use super::byte_compare::ByteCompare;
 use super::pretty::Color;
 use super::qemu;
 use crate::serial_print;
@@ -69,12 +69,8 @@ pub fn panic_should_panic(_: &PanicInfo) -> ! {
 }
 
 // Test mode should panic with message handler.
-pub fn panic_should_panic_with<const LENGTH: usize>(info: &PanicInfo, message: &[u8; LENGTH]) -> ! {
-    let mut buffer = ByteWriter::<LENGTH>::new();
-    use core::fmt::Write;
-    write!(&mut buffer, "{}", info).unwrap();
-
-    if buffer.starts_with(message) {
+pub fn panic_should_panic_with(info: &PanicInfo, message: &str) -> ! {
+    if ByteCompare::starts_with(info, message) {
         println_ok();
         qemu::exit(qemu::ExitCode::Success);
     } else {
@@ -82,7 +78,7 @@ pub fn panic_should_panic_with<const LENGTH: usize>(info: &PanicInfo, message: &
         serial_println!(
             "\nPanic did not contain the expected message.\n{:>10}: {}\n{:>10}: {}",
             "Expected",
-            str::from_utf8(message).unwrap(),
+            message,
             "Info",
             info
         );
