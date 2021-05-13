@@ -6,8 +6,10 @@ edition = "2018"
 
 [dependencies]
 bootloader = "0.9.17"
-spin = "0.7.1"
-uart_16550 = "0.2.12"
+pc-keyboard = "0.5.1"
+pic8259_simple = "0.2.0"
+spin = "0.9.0"
+uart_16550 = "0.2.13"
 volatile = "0.4.4"
 x86_64 = "0.14.0"
 
