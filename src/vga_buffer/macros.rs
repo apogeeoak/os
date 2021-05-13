@@ -12,5 +12,9 @@ macro_rules! println {
 #[doc(hidden)]
 pub fn _print(args: core::fmt::Arguments) {
     use core::fmt::Write;
-    crate::vga_buffer::writer().write_fmt(args).unwrap();
+
+    // Disable interrupts while writing.
+    x86_64::instructions::interrupts::without_interrupts(|| {
+        crate::vga_buffer::writer().write_fmt(args).unwrap();
+    });
 }

@@ -56,16 +56,14 @@ pub fn panic(info: &PanicInfo) -> ! {
     println_failed();
     serial_println!("\nError: {}", info);
     qemu::exit(qemu::ExitCode::Failure);
-    #[allow(clippy::empty_loop)]
-    loop {}
+    crate::halt_loop();
 }
 
 // Test mode should panic handler.
 pub fn panic_should_panic(_: &PanicInfo) -> ! {
     println_ok();
     qemu::exit(qemu::ExitCode::Success);
-    #[allow(clippy::empty_loop)]
-    loop {}
+    crate::halt_loop();
 }
 
 // Test mode should panic with message handler.
@@ -84,8 +82,7 @@ pub fn panic_should_panic_with(info: &PanicInfo, message: &str) -> ! {
         );
         qemu::exit(qemu::ExitCode::Failure);
     }
-    #[allow(clippy::empty_loop)]
-    loop {}
+    crate::halt_loop();
 }
 
 fn println_ok() {

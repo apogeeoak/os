@@ -19,11 +19,11 @@ fn println_overflow() {
 #[test_case]
 fn println_output() {
     let s = "Single line of text.";
-    println!("{}", s);
-    let writes = writer();
+    println!("\n{}", s);
+    let writer = writer();
     let row = buffer::Buffer::last_row() - 1;
     for (i, b) in s.bytes().enumerate() {
-        let byte = writes.read_byte(row, i);
-        assert_eq!(b as char, byte as char);
+        let byte = writer.read_byte(row, i);
+        assert_eq!(byte as char, b as char);
     }
 }

@@ -13,13 +13,13 @@ mod kernel {
     pub fn main(_: &'static bootloader::BootInfo) -> ! {
         os::init();
         println!("Hello World!");
-        loop {}
+        os::halt_loop();
     }
 
     #[panic_handler]
     fn panic(info: &core::panic::PanicInfo) -> ! {
         println!("{}", info);
-        loop {}
+        os::halt_loop();
     }
 }
 

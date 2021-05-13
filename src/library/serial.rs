@@ -1,6 +1,6 @@
 use core::fmt;
-use uart_16550::SerialPort;
 use spin::{Lazy, Mutex};
+use uart_16550::SerialPort;
 
 pub struct Serial {
     inner: &'static Mutex<SerialPort>,
@@ -39,5 +39,9 @@ macro_rules! serial_println {
 #[doc(hidden)]
 pub fn _print(args: core::fmt::Arguments) {
     use core::fmt::Write;
-    serial().write_fmt(args).expect("Printing to serial interface failed.")
+
+    // Disable interrupts while writing.
+    x86_64::instructions::interrupts::without_interrupts(|| {
+        serial().write_fmt(args).expect("Printing to serial interface failed.");
+    })
 }

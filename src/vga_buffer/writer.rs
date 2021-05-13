@@ -26,9 +26,7 @@ impl fmt::Write for Writer {
 
 impl Writer {
     pub fn lock(&self) -> WriterLock {
-        WriterLock {
-            inner: self.inner.lock(),
-        }
+        WriterLock { inner: self.inner.lock() }
     }
 
     pub fn read_byte(&self, row: usize, column: usize) -> u8 {
@@ -41,6 +39,13 @@ impl Writer {
 
     pub fn write_string(&self, s: &str) {
         self.lock().write_string(s);
+    }
+}
+
+impl fmt::Write for WriterLock<'_> {
+    fn write_str(&mut self, s: &str) -> fmt::Result {
+        self.write_string(s);
+        Ok(())
     }
 }
 

@@ -13,6 +13,12 @@ pub mod vga_buffer;
 
 mod interrupts;
 
+pub fn halt_loop() -> ! {
+    loop {
+        x86_64::instructions::hlt();
+    }
+}
+
 pub fn init() {
     interrupts::init();
 }
@@ -24,7 +30,7 @@ mod tests {
     pub fn main(_: &'static bootloader::BootInfo) -> ! {
         super::init();
         super::test_harness();
-        loop {}
+        super::halt_loop();
     }
 
     #[panic_handler]
