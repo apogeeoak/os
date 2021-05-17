@@ -1,4 +1,4 @@
-use pic8259_simple::ChainedPics;
+use pic8259::ChainedPics;
 use spin::Mutex;
 
 #[derive(Clone, Copy, Debug)]

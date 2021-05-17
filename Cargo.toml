@@ -7,11 +7,11 @@ edition = "2018"
 [dependencies]
 bootloader = "0.9.17"
 pc-keyboard = "0.5.1"
-pic8259_simple = "0.2.0"
+pic8259 = "0.10.1"
 spin = "0.9.0"
-uart_16550 = "0.2.13"
+uart_16550 = "0.2.14"
 volatile = "0.4.4"
-x86_64 = "0.14.0"
+x86_64 = "0.14.2"
 
 [package.metadata.bootimage]
 test-args = [
